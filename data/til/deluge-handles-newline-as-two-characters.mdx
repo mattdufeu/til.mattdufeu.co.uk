@@ -1,0 +1,23 @@
+---
+title: Deluge handles newline as two characters
+date: 2025-12-22T12:00:00+00:00
+tags:
+  - deluge
+summary: While trying to post a message from Zoho to Azure Service Bus, I found out that Deluge doesn't handle the newline character ("\n") in the same way as C#
+---
+
+I wanted to send a message from Zoho to an Azure Service bus. Zoho Creator has it's own language called Deluge, so I had to rely on [HTTP Post](https://learn.microsoft.com/en-us/rest/api/servicebus/send-message-to-queue) rather than the C# libraries I'm used to.
+
+As Zoho isn't an Azure system, I had to use a [Shared Access Signature token](https://learn.microsoft.com/en-us/azure/service-bus-messaging/service-bus-sas) for Authorization.
+
+Never done that before in any language, so I decided to write a simple C# console app that parses the Shared Access Policy to create the SAS Token and post a message. So far so good.
+
+After asking AI to translate the C# into Deluge I was getting a 401 Unauthorized response.
+
+Lots of debugging later (actually lots of printf/Console.WriteLine statements) I managed to track the difference down to the Deluge equivalent of this code:
+
+```c#
+urlencode(base64(hmacsha256(urlencode('https://<yournamespace>.servicebus.windows.net/') + "\n" + '<expiry instant>', '<signing key>')))
+```
+
+Turns out, thanks to AI, Deluge treats "\n" as two characters, so the encrytpion was different. After replacing "\n" with `zoho.encrytpion.urlDecode("%0A")` it worked.
