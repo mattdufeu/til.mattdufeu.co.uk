@@ -1,0 +1,28 @@
+---
+title: Godot's TileMapLayer, TileMap and TileSet
+date: 2065-02-07T12:00:00+00:00
+tags:
+  - godot
+summary: Making a simple Maze Generator in Godot helped me learn about the TileMapLayer node, TileMaps and TileSets
+---
+
+While learning Godot, the next project on the list was a simple Maze Generator.
+
+I learned all about TileMapLayer (although I only used one layer in this game), TileMap and TileSets.
+
+I'm sure I barely scratched the surface, but this included adding collision polygons. That turned out to be quite hard as the Godot editor is small and clicking accurately and consistently across many tiles is hard.
+
+I'd get stuck when moving my character around, and realised that the collisions of tiles didn't line up perfectly.
+
+I learned you can edit the .tscn file, in particular:
+
+```
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bfm34"]
+texture = ExtResource("3_boen6")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-21.073692, -32, -21.073692, 32, -32, 32, -32, -32)
+0:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(22.08134, -32, 21.148327, 32, 32, 32, 32, -32)
+```
+
+So all the coordinates are similar, say -21 instead of -21.073692.
