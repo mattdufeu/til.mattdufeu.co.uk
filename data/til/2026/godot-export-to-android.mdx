@@ -1,0 +1,54 @@
+---
+title: Exporting to Android - Godot 4.6
+date: 2026-12-22T12:00:00+00:00
+tags:
+  - godot
+summary: Exporting to Android from Godot is fully supported, but there's a lot of setup. 
+---
+
+Nothing overly exciting here, it's mostly reading the documentation.
+
+First, install all the tools according to https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_android.html.
+
+I did the following order:
+
+* OpenJDK
+* Android Studio
+* Environment Variables (ANDROID_HOME and Path (include sdk/platform-tools and sdk/cmdline-tools/latest/bin)
+* Platform tools etc with the command line, which at the time of writing is:
+
+```powershell
+sdkmanager --sdk_root=<android_sdk_path> "platform-tools" "build-tools;35.0.1" "platforms;android-35" "cmdline-tools;latest" "cmake;3.10.2.4988404" "ndk;28.1.13356709"
+```
+
+* Godot Editor Settings:
+ * Java SDK Path
+ * Android SDK Path
+
+Not sure why this isn't in the Godot docs, but I then had to jump to Android Developer docs page https://developer.android.com/games/engines/godot/godot-export to:
+
+* Install Android Build Template
+* Setup Android Export Preset
+
+## Running on device
+
+I could then succesfully export from Godot to an APK.
+
+After connecting my device and confirming it's working with `adb device list` I could install my app with `adb install apk_file`
+
+## Running on an emulator
+
+I created a new device in Virtual Device Manager (Android Studio -> More Actions).
+
+Started the emulator.
+
+Deployed from Godot via https://docs.godotengine.org/en/stable/tutorials/export/one-click_deploy.html
+
+That initially caused a warning about my export not have x86 selected in the export template. It seems it's ok to have arm and x86 selected in the same one.
+
+That resulted in a black screen, but changin the renderer to "Compatibility" seems to have fixed that.
+
+All I need to do now, is figure out how to resize my game depending on the device as it's not exactly the way it looks when running on my windows desktop:
+
+<div align="center">![flappy bird clone in an emulator](/static/images/2026/Flapp_Bird_Clone_on_Emulator.png)</div>
+
